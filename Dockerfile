@@ -11,8 +11,8 @@ COPY . /app
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir fastapi uvicorn numpy pydantic scikit-learn
 
-# Expose the FastAPI default port (8000)
+# Expose port 8080 (Required for Google Cloud Run)
 EXPOSE 8080
 
-# Run FastAPI using Uvicorn
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
+# Run FastAPI using Uvicorn and read PORT dynamically
+CMD ["python", "app.py"]
