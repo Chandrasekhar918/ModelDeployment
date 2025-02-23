@@ -253,25 +253,20 @@
 # if __name__ == "__main__":
 #     app.run(port=5000)  # Run on port 5000
 #
-#
-
+import os
+import uvicorn
 from fastapi import FastAPI
 import pickle
 import numpy as np
 from pydantic import BaseModel
-import os
-import uvicorn
 
 app = FastAPI()
 
-# Load model and scaler from the correct path inside the Docker container
-model_path = os.path.join(os.getcwd(), "Log_Reg.pkl")
-scaler_path = os.path.join(os.getcwd(), "scaler.pkl")
-
-with open(model_path, "rb") as file:
+# Load Model and Scaler
+with open("Log_Reg.pkl", "rb") as file:
     model = pickle.load(file)
 
-with open(scaler_path, "rb") as file2:
+with open("scaler.pkl", "rb") as file2:
     scaler = pickle.load(file2)
 
 # Define request body format
@@ -282,19 +277,14 @@ class InputData(BaseModel):
 # Define prediction endpoint
 @app.post("/predict/")
 def predict(data: InputData):
-    # Convert input to NumPy array
     input_data = np.array([[data.age, data.estimated_salary]])
-
-    # Apply scaling
     input_scaled = scaler.transform(input_data)
-
-    # Make prediction
     prediction = model.predict(input_scaled)
-
-    # Return response
     return {"prediction": int(prediction[0])}
 
-# Ensure the app runs on PORT 8080 inside the container
+# ✅ Fix: Read PORT from the environment (Cloud Run sets it dynamically)
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8080))  # Read PORT from environment (default 8080)
+    port = int(os.getenv("PORT", 8080))  # Default to 8080 if not set
     uvicorn.run(app, host="0.0.0.0", port=port)
+
+
