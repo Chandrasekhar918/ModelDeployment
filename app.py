@@ -259,16 +259,19 @@ from fastapi import FastAPI
 import pickle
 import numpy as np
 from pydantic import BaseModel
-
-
+import os
+import uvicorn
 
 app = FastAPI()
 
+# Load model and scaler from the correct path inside the Docker container
+model_path = os.path.join(os.getcwd(), "Log_Reg.pkl")
+scaler_path = os.path.join(os.getcwd(), "scaler.pkl")
 
-with open("C:/Users/bansekha/OneDrive - Capgemini/Desktop/ML Practice/Log_Reg.pkl",'rb') as file:
+with open(model_path, "rb") as file:
     model = pickle.load(file)
 
-with open("C:/Users/bansekha/OneDrive - Capgemini/Desktop/ML Practice/scaler.pkl",'rb') as file2:
+with open(scaler_path, "rb") as file2:
     scaler = pickle.load(file2)
 
 # Define request body format
@@ -291,10 +294,7 @@ def predict(data: InputData):
     # Return response
     return {"prediction": int(prediction[0])}
 
-
-import os
-import uvicorn
-
+# Ensure the app runs on PORT 8080 inside the container
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8080))  # Read PORT from environment (default 8080)
     uvicorn.run(app, host="0.0.0.0", port=port)
