@@ -262,19 +262,23 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# Load Model and Scaler
-with open("Log_Reg.pkl", "rb") as file:
-    model = pickle.load(file)
+# Load Model and Scaler from the correct path inside Docker
+model_path = os.path.join("/app", "Log_Reg.pkl")  # Use /app (container path)
+scaler_path = os.path.join("/app", "scaler.pkl")
 
-with open("scaler.pkl", "rb") as file2:
-    scaler = pickle.load(file2)
+try:
+    with open(model_path, "rb") as file:
+        model = pickle.load(file)
+    with open(scaler_path, "rb") as file2:
+        scaler = pickle.load(file2)
+except FileNotFoundError:
+    raise RuntimeError(f"Model files not found at {model_path} or {scaler_path}")
 
 # Define request body format
 class InputData(BaseModel):
     age: int
     estimated_salary: float
 
-# Define prediction endpoint
 @app.post("/predict/")
 def predict(data: InputData):
     input_data = np.array([[data.age, data.estimated_salary]])
@@ -282,9 +286,8 @@ def predict(data: InputData):
     prediction = model.predict(input_scaled)
     return {"prediction": int(prediction[0])}
 
-# ✅ Fix: Read PORT from the environment (Cloud Run sets it dynamically)
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8080))  # Default to 8080 if not set
+    port = int(os.getenv("PORT", 8080))
     uvicorn.run(app, host="0.0.0.0", port=port)
 
 
