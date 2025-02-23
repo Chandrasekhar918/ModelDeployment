@@ -9,7 +9,8 @@ COPY . /app
 
 # Install dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir fastapi uvicorn numpy pydantic scikit-learn
+    pip install --no-cache-dir fastapi uvicorn numpy pydantic scikit-learn joblib pandas
+
 
 # Expose port 8080 (Required for Google Cloud Run)
 EXPOSE 8080
