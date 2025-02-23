@@ -7,6 +7,9 @@ WORKDIR /app
 # Copy all files (including model files) into /app
 COPY . /app
 
+# Verify model files exist after COPY
+RUN ls -l /app  # Debugging step
+
 # Install dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir fastapi uvicorn numpy pydantic scikit-learn
