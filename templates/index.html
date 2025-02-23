@@ -1,27 +1,76 @@
+<!--&lt;!&ndash;<!DOCTYPE html>&ndash;&gt;-->
+<!--&lt;!&ndash;<html lang="en">&ndash;&gt;-->
+<!--&lt;!&ndash;<head>&ndash;&gt;-->
+<!--&lt;!&ndash;    <meta charset="UTF-8">&ndash;&gt;-->
+<!--&lt;!&ndash;        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">&ndash;&gt;-->
+<!--&lt;!&ndash;    <title>Flask</title>&ndash;&gt;-->
+<!--&lt;!&ndash;</head>&ndash;&gt;-->
+<!--&lt;!&ndash;<body>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1>{{ message }}a</h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h2>Enter your name:</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;<form action='/add_user' method="POST">&ndash;&gt;-->
+<!--&lt;!&ndash;    <label for="name">Name:</label>&ndash;&gt;-->
+<!--&lt;!&ndash;    <input type="text" name="name">&ndash;&gt;-->
+<!--&lt;!&ndash;    <button type="submit"> Submit</button>&ndash;&gt;-->
+
+<!--&lt;!&ndash;</form>&ndash;&gt;-->
+<!--&lt;!&ndash;{% with messages = get_flashed_messages() %}&ndash;&gt;-->
+<!--&lt;!&ndash;    {% if messages %}&ndash;&gt;-->
+<!--&lt;!&ndash;        <ul>&ndash;&gt;-->
+<!--&lt;!&ndash;            {% for message in messages %}&ndash;&gt;-->
+<!--&lt;!&ndash;                <li>{{ message }}</li>&ndash;&gt;-->
+<!--&lt;!&ndash;            {% endfor %}&ndash;&gt;-->
+<!--&lt;!&ndash;        </ul>&ndash;&gt;-->
+<!--&lt;!&ndash;    {% endif %}&ndash;&gt;-->
+<!--&lt;!&ndash;    {% endwith %}&ndash;&gt;-->
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Simple AJAX Example</title>-->
+<!--    <script>-->
+<!--        // Function to make the AJAX request-->
+<!--        function makeRequest() {-->
+<!--            var xhr = new XMLHttpRequest();-->
+<!--            xhr.open('GET', '/get_data', true);  // Prepare the request (GET request to /get_data)-->
+<!--            xhr.onreadystatechange = function() {-->
+<!--                if (xhr.readyState == 4 && xhr.status == 200) {-->
+<!--                    var response = JSON.parse(xhr.responseText); // Parse JSON response-->
+<!--                    document.getElementById('response').innerHTML = response.message; // Update HTML with the response-->
+<!--                }-->
+<!--            };-->
+<!--            xhr.send(); // Send the request-->
+<!--        }-->
+<!--    </script>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h1>Simple AJAX Example</h1>-->
+<!--    <button onclick="makeRequest()">Get Data</button>-->
+<!--    <p id="response"></p> &lt;!&ndash; This will display the response from the server &ndash;&gt;-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    <title>Flask</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistic Regression Prediction</title>
 </head>
 <body>
-<h1>{{ message }}</h1>
-<h2>Enter your name:</h2>
-<form action='/add_user' method="POST">
-    <label for="name">Name:</label>
-    <input type="text" name="name">
-    <button type="submit"> Submit</button>
+    <h1>Logistic Regression Prediction</h1>
+    <form method="POST" action="/predict">
+        <label for="input_data">Enter comma-separated values for prediction (e.g., 19,19000):</label><br>
+        <input type="text" id="input_data" name="input_data" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
 
-</form>
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
+    {% if prediction is not none %}
+        <h2>Prediction Result: {{ prediction }}</h2>
     {% endif %}
-    {% endwith %}
 </body>
 </html>
