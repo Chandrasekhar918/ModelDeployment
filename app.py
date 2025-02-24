@@ -259,6 +259,7 @@ from fastapi import FastAPI
 import pickle
 import numpy as np
 from pydantic import BaseModel
+import mlflow
 
 app = FastAPI()
 
@@ -273,6 +274,10 @@ try:
         scaler = pickle.load(file2)
 except FileNotFoundError:
     raise RuntimeError(f"Model files not found at {model_path} or {scaler_path}")
+    
+# Configure MLflow Tracking
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://your-mlflow-tracking-server:5000")
+mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
 # Define request body format
 class InputData(BaseModel):
@@ -284,6 +289,13 @@ def predict(data: InputData):
     input_data = np.array([[data.age, data.estimated_salary]])
     input_scaled = scaler.transform(input_data)
     prediction = model.predict(input_scaled)
+    # Log input & prediction to MLflow
+    with mlflow.start_run():
+        mlflow.log_param("age", data.age)
+        mlflow.log_param("estimated_salary", data.estimated_salary)
+        mlflow.log_metric("prediction", float(prediction[0]))
+
+  
     return {"prediction": int(prediction[0])}
 
 if __name__ == "__main__":
