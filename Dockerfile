@@ -12,7 +12,7 @@ RUN ls -l /app  # Debugging step
 
 # Install dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir fastapi uvicorn numpy pydantic scikit-learn
+    pip install --no-cache-dir fastapi uvicorn numpy pydantic scikit-learn mlflow
 
 # Expose port 8080 (Required for Google Cloud Run)
 EXPOSE 8080
